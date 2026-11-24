@@ -20,24 +20,32 @@ for (const file of ["index.js", "client.js", "models.js"]) {
 sourceKeys.add(manifest.name);
 sourceKeys.add(manifest.description);
 for (const entry of manifest.navigation) if (entry.title) sourceKeys.add(entry.title);
+for (const entry of manifest.settings || []) {
+  if (entry.label) sourceKeys.add(entry.label);
+  if (entry.help) sourceKeys.add(entry.help);
+  for (const option of entry.options || []) if (option.label) sourceKeys.add(option.label);
+}
 
 async function runtime(language = "en") {
   const store = new Map();
+  const settings = new Map();
   const prompts = [], requests = [];
   let payload;
   const env = { language, status: 200, body: null };
+  const host = {
+    t: (message) => dictionaries[env.language]?.[message] ?? message,
+    storage: { get: (key) => store.get(key), set: (key, value) => store.set(key, value), remove: (key) => store.delete(key) },
+    setting: (key) => settings.get(key) ?? "",
+    crypto: { md5: () => "fixture", aesEcbEncrypt: (_, text) => { payload = JSON.parse(text.split("-36cd479b6b5-")[1]); return "fixture"; } },
+    signInPrompt: (value = {}) => prompts.push(value),
+  };
   const context = vm.createContext({
     URL, URLSearchParams, AbortSignal, console,
     setTimeout: (fn, ms) => setTimeout(fn, Math.min(ms, 1)),
-    host: {
-      t: (message) => dictionaries[env.language]?.[message] ?? message,
-      storage: { get: (key) => store.get(key), set: (key, value) => store.set(key, value), remove: (key) => store.delete(key) },
-      crypto: { md5: () => "fixture", aesEcbEncrypt: (_, text) => { payload = JSON.parse(text.split("-36cd479b6b5-")[1]); return "fixture"; } },
-      signInPrompt: (value = {}) => prompts.push(value),
-    },
+    host,
     fetch: async (url) => {
       requests.push({ url, payload });
-      const body = env.body ?? (url.includes("/unikey") ? { code: 200, unikey: "fixture-qr" }
+      const body = typeof env.body === "function" ? env.body(url, payload) : env.body ?? (url.includes("/unikey") ? { code: 200, unikey: "fixture-qr" }
         : url.includes("/client/login") ? { code: -462 } : { code: 200, more: true, playlists: [] });
       return { ok: env.status === 200, status: env.status, headers: { getSetCookie: () => [] }, json: async () => body };
     },
@@ -53,7 +61,7 @@ async function runtime(language = "en") {
   const main = load(path.join(root, "index.js"));
   await main.link((specifier, ref) => load(path.resolve(path.dirname(ref.identifier), specifier)));
   await main.evaluate();
-  return { env, store, prompts, requests, plugin: main.namespace, models: modules.get(path.join(root, "models.js")).namespace, i18n: modules.get(path.join(root, "i18n.js")).namespace };
+  return { env, store, settings, host, prompts, requests, plugin: main.namespace, models: modules.get(path.join(root, "models.js")).namespace, i18n: modules.get(path.join(root, "i18n.js")).namespace };
 }
 
 test("收藏专辑兼容音乐库的数组读取，保留分页参数且空页结束", async () => {
@@ -127,6 +135,41 @@ test("切换语言立即生效，服务端占位符不被二次替换", async ()
   r.env.body = { code: 403, message: "服务端消息 {status}" };
   await assert.rejects(r.plugin.home(), (e) => e.message === "NetEase request failed (403): 服务端消息 {status}");
   assert.equal(r.i18n.t("网易云请求失败（{code}）：{message}", { code: 1, message: "$& {code}" }), "NetEase request failed (1): $& {code}");
+});
+
+test("音质设置只降不升，Hi-Res 取不到音频时回退到无损", async () => {
+  const r = await runtime("zh-CN");
+  r.store.set("cookies", { MUSIC_U: "fixture-session" });
+  r.store.set("account", { id: "42", name: "测试用户" });
+  const audio = (level) => ({ code: 200, data: [{ url: `http://p1.music.126.net/${level}.flac`, type: "flac", level, br: 1, size: 1 }] });
+
+  // 应用程序音质高于插件上限时按上限降级。
+  r.env.body = audio("standard");
+  r.settings.set("quality", "standard");
+  await r.plugin.stream({ id: "1", quality: "high" });
+  assert.equal(r.requests.at(-1).payload.level, "standard");
+
+  // 插件上限高于应用选择时不会升到应用没选的档位。
+  r.env.body = audio("exhigh");
+  r.settings.set("quality", "lossless");
+  await r.plugin.stream({ id: "1", quality: "high" });
+  assert.equal(r.requests.at(-1).payload.level, "exhigh");
+
+  // 上限设为 Hi-Res：先请求 hires，没有可用地址时回退到无损。
+  r.settings.set("quality", "hires");
+  r.env.body = (url, payload) => payload.level === "hires"
+    ? { code: 200, data: [{ url: null }] }
+    : audio("lossless");
+  const result = await r.plugin.stream({ id: "1", quality: "lossless" });
+  assert.equal(result.url, "https://p1.music.126.net/lossless.flac");
+  assert.deepEqual(r.requests.slice(-2).map((x) => x.payload.level), ["hires", "lossless"]);
+
+  // 未设置（旧版本宿主没有 host.setting）时保持播放器请求的音质。
+  delete r.host.setting;
+  r.settings.delete("quality");
+  r.env.body = audio("lossless");
+  await r.plugin.stream({ id: "1", quality: "lossless" });
+  assert.equal(r.requests.at(-1).payload.level, "lossless");
 });
 
 test("README 互链、仓库安装地址和许可证一致", () => {

@@ -1,5 +1,7 @@
 {
+  "Hi-Res": "Hi-Res",
   "下一页": "Página siguiente",
+  "不会高于播放器设置；Hi-Res 不可用时自动回退到无损": "Nunca supera el ajuste del reproductor; si Hi-Res no está disponible, vuelve a sin pérdida",
   "不支持这个发现页面": "Esta página de descubrimiento no es compatible",
   "不支持这种搜索类型": "Este tipo de búsqueda no es compatible",
   "二维码已过期，正在刷新…": "El código QR ha caducado. Actualizando…",
@@ -13,6 +15,7 @@
   "扫码登录超时，请重新点击登录": "Se agotó el tiempo de acceso por QR. Inicia sesión de nuevo",
   "排行榜": "Listas de éxitos",
   "推荐歌单": "Playlists recomendadas",
+  "无损": "Sin pérdida",
   "无效的接口路径": "Ruta de API no válida",
   "无效的网易云资源编号": "ID de recurso de NetEase no válido",
   "无法确认网易云账号，请重新登录": "No se pudo verificar tu cuenta de NetEase. Inicia sesión de nuevo",
@@ -24,6 +27,7 @@
   "未知歌手": "Artista desconocido",
   "未知歌曲": "Canción desconocida",
   "未知菜单操作": "Acción de menú desconocida",
+  "标准": "Estándar",
   "根据你的听歌喜好更新": "Se actualiza según tus gustos musicales",
   "欧美": "Occidental",
   "歌单不存在，或没有访问权限": "Esta playlist no existe o no tienes acceso",
@@ -53,6 +57,9 @@
   "请用网易云音乐 App 扫码，并在手机上确认登录": "Escanea con la app NetEase Cloud Music y confirma el acceso en tu teléfono",
   "请稍后重试": "Inténtalo más tarde",
   "账号歌单数量超过插件当前支持范围": "Tu cuenta tiene más playlists de las que admite el plugin",
+  "跟随播放器": "Seguir al reproductor",
   "轻音乐": "Música ligera",
-  "韩语": "Coreano"
+  "韩语": "Coreano",
+  "音质上限": "Calidad máxima",
+  "高音质": "Alta"
 }

@@ -279,15 +279,49 @@ export async function browse({ page = "" }) {
   };
 }
 
-export async function stream({ id: value, quality = "high" }) {
-  const level = { standard: "standard", high: "exhigh", lossless: "lossless" }[quality] || "exhigh";
-  const j = await api("/api/song/enhance/player/url/v1", { ids: JSON.stringify([id(value)]), level, encodeType: "flac" });
+const QUALITY_RANK = { standard: 0, high: 1, lossless: 2, hires: 3 };
+const QUALITY_LEVEL = { standard: "standard", high: "exhigh", lossless: "lossless", hires: "hires" };
+
+// 音质设置只限制上限，不会高于播放器本身的音质选择。
+function qualityCap() {
+  if (typeof host.setting !== "function") return "";
+  const cap = host.setting("quality");
+  return Object.prototype.hasOwnProperty.call(QUALITY_RANK, cap) ? cap : "";
+}
+
+async function streamSource(songId, level) {
+  const j = await api("/api/song/enhance/player/url/v1", { ids: JSON.stringify([songId]), level, encodeType: "flac" });
   const s = j.data?.[0];
+  const usable = Boolean(s?.url) && /^https?:\/\//i.test(s.url) && !(s.freeTrialInfo && s.freeTrialInfo !== "null");
+  return { source: s, usable };
+}
+
+function streamResult(s, level) {
+  return { url: s.url.replace(/^http:\/\//i, "https://"), type: s.type || "mp3", quality: s.level || level, bitRate: s.br || 0, size: s.size || 0 };
+}
+
+export async function stream({ id: value, quality = "high" }) {
+  const songId = id(value);
+  const requested = Object.prototype.hasOwnProperty.call(QUALITY_RANK, quality) ? quality : "high";
+  const cap = qualityCap();
+  let level = cap && QUALITY_RANK[cap] < QUALITY_RANK[requested] ? cap : requested;
+  // 播放器最高只到无损；上限设为 Hi-Res 时才向上尝试，取不到音频时回退到无损。
+  if (level === "lossless" && cap === "hires") level = "hires";
+  if (level === "hires") {
+    try {
+      const attempt = await streamSource(songId, QUALITY_LEVEL.hires);
+      if (attempt.usable) return streamResult(attempt.source, "hires");
+    } catch (e) {
+      if (e.code === "signIn") throw e;
+    }
+    level = "lossless";
+  }
+  const { source: s } = await streamSource(songId, QUALITY_LEVEL[level]);
   if (!s?.url || (s.freeTrialInfo && s.freeTrialInfo !== "null")) {
     fail("unavailable", hasSession() ? "此歌曲需要会员、单独购买，或当前地区无版权；不会以试听片段代替完整歌曲" : "此歌曲需要登录或相应会员权限，请先扫码登录网易云音乐");
   }
   if (!/^https?:\/\//i.test(s.url)) fail("unavailable", "网易云未返回有效的音频地址");
-  return { url: s.url.replace(/^http:\/\//i, "https://"), type: s.type || "mp3", quality: s.level || level, bitRate: s.br || 0, size: s.size || 0 };
+  return streamResult(s, level);
 }
 
 export async function lyrics({ id: value }) {

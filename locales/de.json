@@ -1,5 +1,7 @@
 {
+  "Hi-Res": "Hi-Res",
   "下一页": "Nächste Seite",
+  "不会高于播放器设置；Hi-Res 不可用时自动回退到无损": "Überschreitet nie die Einstellung des Players; fällt bei nicht verfügbarem Hi-Res auf Lossless zurück",
   "不支持这个发现页面": "Diese Entdecken-Seite wird nicht unterstützt",
   "不支持这种搜索类型": "Dieser Suchtyp wird nicht unterstützt",
   "二维码已过期，正在刷新…": "QR-Code abgelaufen. Wird erneuert…",
@@ -13,6 +15,7 @@
   "扫码登录超时，请重新点击登录": "Zeitlimit der QR-Anmeldung erreicht. Bitte erneut anmelden",
   "排行榜": "Charts",
   "推荐歌单": "Empfohlene Playlists",
+  "无损": "Lossless",
   "无效的接口路径": "Ungültiger API-Pfad",
   "无效的网易云资源编号": "Ungültige NetEase-Ressourcen-ID",
   "无法确认网易云账号，请重新登录": "NetEase-Konto konnte nicht überprüft werden. Bitte erneut anmelden",
@@ -24,6 +27,7 @@
   "未知歌手": "Unbekannter Interpret",
   "未知歌曲": "Unbekannter Titel",
   "未知菜单操作": "Unbekannte Menüaktion",
+  "标准": "Standard",
   "根据你的听歌喜好更新": "Basierend auf deinen Hörvorlieben aktualisiert",
   "欧美": "Westlich",
   "歌单不存在，或没有访问权限": "Diese Playlist existiert nicht oder du hast keinen Zugriff",
@@ -53,6 +57,9 @@
   "请用网易云音乐 App 扫码，并在手机上确认登录": "Mit der NetEase Cloud Music App scannen und Anmeldung auf dem Smartphone bestätigen",
   "请稍后重试": "Bitte später erneut versuchen",
   "账号歌单数量超过插件当前支持范围": "Dein Konto enthält mehr Playlists als dieses Plugin derzeit unterstützt",
+  "跟随播放器": "Player folgen",
   "轻音乐": "Unterhaltungsmusik",
-  "韩语": "Koreanisch"
+  "韩语": "Koreanisch",
+  "音质上限": "Maximale Qualität",
+  "高音质": "Hoch"
 }

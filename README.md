@@ -23,7 +23,7 @@ QR sign-in is the only login method. No server, API key, password, or manual Coo
 - Search tracks, albums, artists, and playlists, with pagination and search suggestions
 - Album, artist, and playlist pages, with playlist tracks loaded in their original order
 - Liked tracks, saved albums, personal playlists, and recent listening history; like/unlike tracks and save/unsave albums
-- Standard, High, and Lossless playback, subject to account permissions and availability
+- Standard, High, Lossless, and Hi-Res playback; the plugin setting caps quality without exceeding the player's choice, and Hi-Res falls back to Lossless, subject to account permissions and availability
 - Synced LRC lyrics and translations when available, plus a track menu shortcut to the NetEase website
 - Automatic QR refresh, retries for temporary connection failures, and protection against outdated sign-in responses
 - Interface translations matching YesPlayMusic: English, Simplified Chinese, Traditional Chinese, Japanese, Korean, French, German, Spanish, and Russian

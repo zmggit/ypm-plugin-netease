@@ -1,12 +1,25 @@
 {
   "id": "netease",
   "name": "网易云音乐",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "minAppVersion": "3.0.0",
   "description": "网易云曲库、歌单、歌词与扫码登录。播放遵循账号会员、地区和版权权限，不提供解锁或下载。",
   "main": "index.js",
   "icon": "icon.jpg",
   "playback": "stream",
   "permissions": { "network": ["interfacepc.music.163.com", "music.163.com"] },
+  "settings": [{
+    "key": "quality",
+    "label": "音质上限",
+    "type": "select",
+    "help": "不会高于播放器设置；Hi-Res 不可用时自动回退到无损",
+    "options": [
+      { "value": "", "label": "跟随播放器" },
+      { "value": "standard", "label": "标准" },
+      { "value": "high", "label": "高音质" },
+      { "value": "lossless", "label": "无损" },
+      { "value": "hires", "label": "Hi-Res" }
+    ]
+  }],
   "navigation": [{ "builtin": "home" }, { "builtin": "liked" }, { "builtin": "savedAlbums" }, { "title": "排行榜", "page": "charts" }]
 }

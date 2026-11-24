@@ -1,5 +1,7 @@
 {
+  "Hi-Res": "Hi-Res",
   "下一页": "Next page",
+  "不会高于播放器设置；Hi-Res 不可用时自动回退到无损": "Never exceeds the player setting; falls back to lossless when Hi-Res is unavailable",
   "不支持这个发现页面": "This discovery page is not supported",
   "不支持这种搜索类型": "This search type is not supported",
   "二维码已过期，正在刷新…": "QR code expired. Refreshing…",
@@ -13,6 +15,7 @@
   "扫码登录超时，请重新点击登录": "QR sign-in timed out. Click sign in to try again",
   "排行榜": "Charts",
   "推荐歌单": "Recommended playlists",
+  "无损": "Lossless",
   "无效的接口路径": "Invalid API path",
   "无效的网易云资源编号": "Invalid NetEase resource ID",
   "无法确认网易云账号，请重新登录": "Unable to verify your NetEase account. Sign in again",
@@ -24,6 +27,7 @@
   "未知歌手": "Unknown artist",
   "未知歌曲": "Unknown track",
   "未知菜单操作": "Unknown menu action",
+  "标准": "Standard",
   "根据你的听歌喜好更新": "Updated based on your listening preferences",
   "欧美": "Western",
   "歌单不存在，或没有访问权限": "This playlist does not exist or you do not have access",
@@ -53,6 +57,9 @@
   "请用网易云音乐 App 扫码，并在手机上确认登录": "Scan with the NetEase Cloud Music app and confirm sign-in on your phone",
   "请稍后重试": "Please try again later",
   "账号歌单数量超过插件当前支持范围": "Your account has more playlists than this plugin currently supports",
+  "跟随播放器": "Follow player",
   "轻音乐": "Easy listening",
-  "韩语": "Korean"
+  "韩语": "Korean",
+  "音质上限": "Maximum quality",
+  "高音质": "High"
 }
